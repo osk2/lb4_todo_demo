@@ -22,16 +22,17 @@ export class TodoService {
    */
   async createTodoWithItems(request: TodoWithItemsRequest): Promise<Todo> {
     const todo = await this.todoRepository.create(request.todo);
-    if (request.items?.length > 0) {
+    if (request.items && request.items.length > 0) {
       for (const itemData of request.items) {
         await this.itemRepository.create({
           ...itemData,
-          todoId: todo.id,
+          todoId: todo.id!,
         });
       }
     }
 
     try {
+      if (todo.id === undefined) throw ApiError.notFound('Todo id is undefined');
       return await this.todoRepository.findById(todo.id, {
         include: ['items'],
       });
