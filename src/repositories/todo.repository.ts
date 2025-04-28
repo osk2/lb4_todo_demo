@@ -1,18 +1,18 @@
 import {Getter, inject} from '@loopback/core';
 import {Count, DefaultCrudRepository, Filter, FilterExcludingWhere, HasManyRepositoryFactory, repository, Where} from '@loopback/repository';
-import {DbDataSource} from '../datasources';
+import {MysqlDataSource} from '../datasources';
 import {Item, Todo, TodoRelations, TodoStatus} from '../models';
 import {ItemRepository} from './item.repository';
 
 export class TodoRepository extends DefaultCrudRepository<
   Todo,
-  typeof Todo.prototype.id,
+  number,
   TodoRelations
 > {
-  public readonly items: HasManyRepositoryFactory<Item, typeof Todo.prototype.id>;
+  public readonly items: HasManyRepositoryFactory<Item, number>;
 
   constructor(
-    @inject('datasources.db') dataSource: DbDataSource,
+    @inject('datasources.mysql') dataSource: MysqlDataSource,
     @repository.getter('ItemRepository') protected itemRepositoryGetter: Getter<ItemRepository>,
   ) {
     super(Todo, dataSource);
