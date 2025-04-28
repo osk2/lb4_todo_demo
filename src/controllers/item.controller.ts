@@ -1,25 +1,25 @@
 import {
-  Count,
-  CountSchema,
-  Filter,
-  FilterExcludingWhere,
-  repository,
-  Where,
+    Count,
+    CountSchema,
+    Filter,
+    FilterExcludingWhere,
+    repository,
+    Where,
 } from '@loopback/repository';
 import {
-  del,
-  get,
-  getModelSchemaRef,
-  param,
-  patch,
-  post,
-  put,
-  requestBody,
-  response,
+    del,
+    get,
+    getModelSchemaRef,
+    param,
+    patch,
+    post,
+    put,
+    requestBody,
+    response,
 } from '@loopback/rest';
-import {Item} from '../models';
-import {ItemRepository, TodoRepository} from '../repositories';
-import {ApiError} from '../utils';
+import { Item } from '../models';
+import { ItemRepository, TodoRepository } from '../repositories';
+import { ApiError } from '../utils';
 
 export class ItemController {
   constructor(
@@ -35,7 +35,7 @@ export class ItemController {
     content: {'application/json': {schema: getModelSchemaRef(Item)}},
   })
   async create(
-    @param.path.string('todoId') todoId: string,
+    @param.path.number('todoId') todoId: number,
     @requestBody({
       content: {
         'application/json': {
@@ -66,7 +66,7 @@ export class ItemController {
     content: {'application/json': {schema: CountSchema}},
   })
   async count(
-    @param.path.string('todoId') todoId: string,
+    @param.path.number('todoId') todoId: number,
     @param.where(Item) where?: Where<Item>,
   ): Promise<Count> {
     try {
@@ -91,7 +91,7 @@ export class ItemController {
     },
   })
   async find(
-    @param.path.string('todoId') todoId: string,
+    @param.path.number('todoId') todoId: number,
     @param.filter(Item) filter?: Filter<Item>,
   ): Promise<Item[]> {
     try {
@@ -123,7 +123,7 @@ export class ItemController {
     },
   })
   async findById(
-    @param.path.string('id') id: string,
+    @param.path.number('id') id: number,
     @param.filter(Item, {exclude: 'where'}) filter?: FilterExcludingWhere<Item>,
   ): Promise<Item> {
     const item = await this.itemRepository.findById(id, filter);
@@ -140,7 +140,7 @@ export class ItemController {
     description: 'Item PATCH success',
   })
   async updateById(
-    @param.path.string('id') id: string,
+    @param.path.number('id') id: number,
     @requestBody({
       content: {
         'application/json': {
@@ -179,7 +179,7 @@ export class ItemController {
     description: 'Item PUT success',
   })
   async replaceById(
-    @param.path.string('id') id: string,
+    @param.path.number('id') id: number,
     @requestBody() item: Item,
   ): Promise<void> {
     const originalItem = await this.itemRepository.findById(id);
@@ -207,7 +207,7 @@ export class ItemController {
   @response(204, {
     description: 'Item DELETE success',
   })
-  async deleteById(@param.path.string('id') id: string): Promise<void> {
+  async deleteById(@param.path.number('id') id: number): Promise<void> {
     const item = await this.itemRepository.findById(id);
     try {
       await this.todoRepository.findById(item.todoId);

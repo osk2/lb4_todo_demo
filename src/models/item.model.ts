@@ -1,14 +1,23 @@
-import { belongsTo, Entity, model, property } from '@loopback/repository';
-import { Todo } from './todo.model';
+import {belongsTo, Entity, model, property} from '@loopback/repository';
+import {Todo} from './todo.model';
 
-@model()
+@model({
+  settings: {
+    indexes: {
+      todoIdIndex: {
+        keys: {todoId: 1},
+        options: {unique: false},
+      },
+    },
+  },
+})
 export class Item extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
     generated: true,
   })
-  id?: string;
+  id?: number;
 
   @property({
     type: 'string',
@@ -41,7 +50,7 @@ export class Item extends Entity {
   updatedAt: Date;
 
   @belongsTo(() => Todo)
-  todoId: string;
+  todoId: number;
 
   constructor(data?: Partial<Item>) {
     super(data);

@@ -24,10 +24,10 @@ export class TodoRepository extends DefaultCrudRepository<
   }
 
   /**
-   * Soft delete a Todo by setting its status to DELETED
+   * Soft delete a Todo record
    * @param id - The ID of the Todo to soft delete
    */
-  async softDelete(id: typeof Todo.prototype.id): Promise<void> {
+  async softDelete(id: number): Promise<void> {
     await this.updateById(id, {
       status: TodoStatus.DELETED,
       updatedAt: new Date(),
@@ -35,7 +35,7 @@ export class TodoRepository extends DefaultCrudRepository<
   }
 
   /**
-   * Override find method to exclude soft-deleted records by default
+   * Override find method to exclude soft-deleted records
    */
   async find(filter?: Filter<Todo>): Promise<Todo[]> {
     const whereCondition = { status: { neq: TodoStatus.DELETED } };
@@ -54,12 +54,12 @@ export class TodoRepository extends DefaultCrudRepository<
    * Override findById method to handle soft-deleted records
    */
   async findById(
-    id: typeof Todo.prototype.id,
+    id: number,
     filter?: FilterExcludingWhere<Todo>,
   ): Promise<Todo> {
     const result = await super.findById(id, filter);
 
-    // If the todo is soft-deleted, we treat it as not found at the repository level
+    // Check if the todo is soft-deleted
     if (result.status === TodoStatus.DELETED) {
       throw new Error('Todo not found');
     }
@@ -68,7 +68,7 @@ export class TodoRepository extends DefaultCrudRepository<
   }
 
   /**
-   * Override count method to exclude soft-deleted records by default
+   * Override count method to exclude soft-deleted records
    */
   async count(where?: Where<Todo>): Promise<Count> {
     const whereCondition = { status: { neq: TodoStatus.DELETED } };
@@ -82,6 +82,8 @@ export class TodoRepository extends DefaultCrudRepository<
 
     return super.count(finalWhere);
   }
+
+  /* ==== Following methods are included soft-deleted records ==== */
 
   /**
    * Find todos including soft-deleted records when needed
@@ -101,7 +103,7 @@ export class TodoRepository extends DefaultCrudRepository<
    * Find a todo by ID, including soft-deleted records
    */
   async findByIdWithDeleted(
-    id: typeof Todo.prototype.id,
+    id: number,
     filter?: FilterExcludingWhere<Todo>,
   ): Promise<Todo> {
     return super.findById(id, filter);

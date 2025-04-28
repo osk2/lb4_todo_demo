@@ -138,7 +138,7 @@ export class TodoController {
     },
   })
   async findById(
-    @param.path.string('id') id: string,
+    @param.path.number('id') id: number,
     @param.filter(Todo, {exclude: 'where'}) filter?: FilterExcludingWhere<Todo>,
   ): Promise<Todo> {
     // The repository layer now handles the check for deleted todos
@@ -150,7 +150,7 @@ export class TodoController {
     description: 'Todo PATCH success',
   })
   async updateById(
-    @param.path.string('id') id: string,
+    @param.path.number('id') id: number,
     @requestBody({
       content: {
         'application/json': {
@@ -160,7 +160,7 @@ export class TodoController {
     })
     todo: Partial<Todo>,
   ): Promise<void> {
-    // The repository's findById will throw if the todo is deleted
+
 
     // Set the updated timestamp
     todo.updatedAt = new Date();
@@ -173,13 +173,11 @@ export class TodoController {
     description: 'Todo PUT success',
   })
   async replaceById(
-    @param.path.string('id') id: string,
+    @param.path.number('id') id: number,
     @requestBody() todo: Todo,
   ): Promise<void> {
-    // The repository's findById will throw if the todo is deleted
     const existingTodo = await this.todoRepository.findById(id);
 
-    // Set the updated timestamp and preserve created timestamp
     todo.updatedAt = new Date();
     todo.createdAt = existingTodo.createdAt;
 
@@ -188,10 +186,9 @@ export class TodoController {
 
   @del('/todos/{id}')
   @response(204, {
-    description: 'Todo DELETE success',
+    description: 'Todo DELETE success'
   })
-  async deleteById(@param.path.string('id') id: string): Promise<void> {
-    // For Todo, we use soft delete implemented in the repository layer
+  async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.todoRepository.softDelete(id);
   }
 }

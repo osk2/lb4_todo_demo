@@ -1,5 +1,5 @@
-import { Entity, hasMany, model, property } from '@loopback/repository';
-import { Item } from './item.model';
+import {Entity, hasMany, model, property} from '@loopback/repository';
+import {Item} from './item.model';
 
 export enum TodoStatus {
   ACTIVE = 'active',
@@ -10,11 +10,11 @@ export enum TodoStatus {
 @model()
 export class Todo extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
     generated: true,
   })
-  id?: string;
+  id?: number;
 
   @property({
     type: 'string',
