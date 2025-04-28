@@ -115,11 +115,15 @@ export class TodoController {
     if (limit !== undefined) finalFilter.limit = limit;
     if (skip !== undefined) finalFilter.skip = skip;
 
-    // Find todos with filter and pagination
+    if (!finalFilter.include) finalFilter.include = [];
+    if (Array.isArray(finalFilter.include)) {
+      if (!finalFilter.include.includes('items')) finalFilter.include.push('items');
+    }
+
     const data = await this.todoRepository.find(finalFilter);
-    // Get total count for the same filter (excluding limit/skip/order)
     const where = finalFilter.where;
     const total = (await this.todoRepository.count(where)).count;
+
     return {
       data,
       total,
