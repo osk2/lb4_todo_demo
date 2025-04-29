@@ -91,7 +91,9 @@ export class ItemController {
   })
   async find(
     @param.path.number('todoId') todoId: number,
-    @param.filter(Item) filter?: Filter<Item>,
+    @param.query.string('name') name?: string,
+    @param.query.number('limit') limit?: number,
+    @param.query.number('skip') skip?: number,
   ): Promise<Item[]> {
     try {
       await this.todoRepository.findById(todoId);
@@ -99,13 +101,11 @@ export class ItemController {
       throw ApiError.notFound('Todo not found or deleted');
     }
 
-    const todoFilter = {todoId};
-    const finalFilter = filter ?? {};
-
-    if (finalFilter.where) {
-      finalFilter.where = {and: [finalFilter.where, todoFilter]};
-    } else {
-      finalFilter.where = todoFilter;
+    const finalFilter: Filter<Item> = {where: {todoId}};
+    if (limit !== undefined) finalFilter.limit = limit;
+    if (skip !== undefined) finalFilter.skip = skip;
+    if (name) {
+      finalFilter.where = {and: [finalFilter.where!, {content: name}]};
     }
 
     return this.itemRepository.find(finalFilter);
