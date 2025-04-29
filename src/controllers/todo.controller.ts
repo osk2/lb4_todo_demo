@@ -192,6 +192,7 @@ export class TodoController {
     description: 'Todo DELETE success'
   })
   async deleteById(@param.path.number('id') id: number): Promise<void> {
+    await this.todoRepository.items(id).delete();
     await this.todoRepository.softDelete(id);
   }
 }
