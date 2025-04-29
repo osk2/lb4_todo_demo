@@ -1,5 +1,13 @@
 import {Getter, inject} from '@loopback/core';
-import {Count, DefaultCrudRepository, Filter, FilterExcludingWhere, HasManyRepositoryFactory, repository, Where} from '@loopback/repository';
+import {
+  Count,
+  DefaultCrudRepository,
+  Filter,
+  FilterExcludingWhere,
+  HasManyRepositoryFactory,
+  repository,
+  Where,
+} from '@loopback/repository';
 import {MysqlDataSource} from '../datasources';
 import {Item, Todo, TodoRelations, TodoStatus} from '../models';
 import {ItemRepository} from './item.repository';
@@ -13,7 +21,8 @@ export class TodoRepository extends DefaultCrudRepository<
 
   constructor(
     @inject('datasources.mysql') dataSource: MysqlDataSource,
-    @repository.getter('ItemRepository') protected itemRepositoryGetter: Getter<ItemRepository>,
+    @repository.getter('ItemRepository')
+    protected itemRepositoryGetter: Getter<ItemRepository>,
   ) {
     super(Todo, dataSource);
     this.items = this.createHasManyRepositoryFactoryFor(
@@ -38,11 +47,11 @@ export class TodoRepository extends DefaultCrudRepository<
    * Override find method to exclude soft-deleted records
    */
   async find(filter?: Filter<Todo>): Promise<Todo[]> {
-    const whereCondition = { status: { neq: TodoStatus.DELETED } };
+    const whereCondition = {status: {neq: TodoStatus.DELETED}};
     const finalFilter = filter ?? {};
 
     if (finalFilter.where) {
-      finalFilter.where = { and: [finalFilter.where, whereCondition] };
+      finalFilter.where = {and: [finalFilter.where, whereCondition]};
     } else {
       finalFilter.where = whereCondition;
     }
@@ -71,11 +80,11 @@ export class TodoRepository extends DefaultCrudRepository<
    * Override count method to exclude soft-deleted records
    */
   async count(where?: Where<Todo>): Promise<Count> {
-    const whereCondition = { status: { neq: TodoStatus.DELETED } };
+    const whereCondition = {status: {neq: TodoStatus.DELETED}};
     let finalWhere = where ?? {};
 
     if (Object.keys(finalWhere).length > 0) {
-      finalWhere = { and: [finalWhere, whereCondition] };
+      finalWhere = {and: [finalWhere, whereCondition]};
     } else {
       finalWhere = whereCondition;
     }

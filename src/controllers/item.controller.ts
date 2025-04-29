@@ -13,7 +13,6 @@ import {
   param,
   patch,
   post,
-  put,
   requestBody,
   response,
 } from '@loopback/rest';
@@ -166,33 +165,6 @@ export class ItemController {
     item.updatedAt = new Date();
 
     await this.itemRepository.updateById(id, item);
-  }
-
-  @put('/items/{id}')
-  @response(204, {
-    description: 'Item PUT success',
-  })
-  async replaceById(
-    @param.path.number('id') id: number,
-    @requestBody() item: Item,
-  ): Promise<void> {
-    const originalItem = await this.itemRepository.findById(id);
-    try {
-      await this.todoRepository.findById(originalItem.todoId);
-    } catch (e) {
-      throw ApiError.notFound('Associated Todo is deleted');
-    }
-
-    if (item.isCompleted && !item.completedAt) {
-      item.completedAt = new Date();
-    } else if (!item.isCompleted) {
-      item.completedAt = undefined;
-    }
-
-    item.updatedAt = new Date();
-    item.createdAt = originalItem.createdAt;
-
-    await this.itemRepository.replaceById(id, item);
   }
 
   @del('/items/{id}')

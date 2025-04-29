@@ -13,13 +13,13 @@ import {
   param,
   patch,
   post,
-  put,
   requestBody,
-  response
+  response,
 } from '@loopback/rest';
 import {Todo, TodoStatus} from '../models';
 import {TodoRepository} from '../repositories';
 import {TodoService, TodoWithItemsRequest} from '../services';
+import {ApiError} from '../utils';
 
 export class TodoController {
   constructor(
@@ -116,7 +116,8 @@ export class TodoController {
 
     if (!finalFilter.include) finalFilter.include = [];
     if (Array.isArray(finalFilter.include)) {
-      if (!finalFilter.include.includes('items')) finalFilter.include.push('items');
+      if (!finalFilter.include.includes('items'))
+        finalFilter.include.push('items');
     }
 
     const data = await this.todoRepository.find(finalFilter);
@@ -140,9 +141,7 @@ export class TodoController {
       },
     },
   })
-  async findById(
-    @param.path.number('id') id: number,
-  ): Promise<Todo> {
+  async findById(@param.path.number('id') id: number): Promise<Todo> {
     return this.todoRepository.findById(id, {include: ['items']});
   }
 
@@ -161,33 +160,19 @@ export class TodoController {
     })
     todo: Partial<Todo>,
   ): Promise<void> {
+    if (todo.status !== undefined) {
+      if (!Object.values(TodoStatus).includes(todo.status)) {
+        throw ApiError.badRequest('Invalid status value');
+      }
+    }
 
-
-    // Set the updated timestamp
     todo.updatedAt = new Date();
-
     await this.todoRepository.updateById(id, todo);
-  }
-
-  @put('/todos/{id}')
-  @response(204, {
-    description: 'Todo PUT success',
-  })
-  async replaceById(
-    @param.path.number('id') id: number,
-    @requestBody() todo: Todo,
-  ): Promise<void> {
-    const existingTodo = await this.todoRepository.findById(id);
-
-    todo.updatedAt = new Date();
-    todo.createdAt = existingTodo.createdAt;
-
-    await this.todoRepository.replaceById(id, todo);
   }
 
   @del('/todos/{id}')
   @response(204, {
-    description: 'Todo DELETE success'
+    description: 'Todo DELETE success',
   })
   async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.todoRepository.items(id).delete();

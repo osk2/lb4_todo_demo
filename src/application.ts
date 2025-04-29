@@ -1,17 +1,17 @@
-import { BootMixin } from '@loopback/boot';
-import { ApplicationConfig, createBindingFromClass } from '@loopback/core';
-import { RepositoryMixin } from '@loopback/repository';
-import { RestApplication } from '@loopback/rest';
+import {BootMixin} from '@loopback/boot';
+import {ApplicationConfig, createBindingFromClass} from '@loopback/core';
+import {RepositoryMixin} from '@loopback/repository';
+import {RestApplication} from '@loopback/rest';
 import {
-    RestExplorerBindings,
-    RestExplorerComponent,
+  RestExplorerBindings,
+  RestExplorerComponent,
 } from '@loopback/rest-explorer';
-import { ServiceMixin } from '@loopback/service-proxy';
+import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
-import { MySequence } from './sequence';
-import { TodoService } from './services';
+import {MySequence} from './sequence';
+import {TodoService} from './services';
 
-export { ApplicationConfig };
+export {ApplicationConfig};
 
 export class Lb4TodoDemoApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),

@@ -32,7 +32,8 @@ export class TodoService {
     }
 
     try {
-      if (todo.id === undefined) throw ApiError.notFound('Todo id is undefined');
+      if (todo.id === undefined)
+        throw ApiError.notFound('Todo id is undefined');
       return await this.todoRepository.findById(todo.id, {
         include: ['items'],
       });

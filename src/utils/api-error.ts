@@ -1,4 +1,4 @@
-import { HttpErrors } from '@loopback/rest';
+import {HttpErrors} from '@loopback/rest';
 
 export class ApiError {
   static notFound(message: string = 'Entity not found'): Error {
