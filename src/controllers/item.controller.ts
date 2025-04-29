@@ -1,25 +1,25 @@
 import {
-    Count,
-    CountSchema,
-    Filter,
-    FilterExcludingWhere,
-    repository,
-    Where,
+  Count,
+  CountSchema,
+  Filter,
+  FilterExcludingWhere,
+  repository,
+  Where,
 } from '@loopback/repository';
 import {
-    del,
-    get,
-    getModelSchemaRef,
-    param,
-    patch,
-    post,
-    put,
-    requestBody,
-    response,
+  del,
+  get,
+  getModelSchemaRef,
+  param,
+  patch,
+  post,
+  put,
+  requestBody,
+  response,
 } from '@loopback/rest';
-import { Item } from '../models';
-import { ItemRepository, TodoRepository } from '../repositories';
-import { ApiError } from '../utils';
+import {Item} from '../models';
+import {ItemRepository, TodoRepository} from '../repositories';
+import {ApiError} from '../utils';
 
 export class ItemController {
   constructor(
@@ -48,7 +48,6 @@ export class ItemController {
     })
     item: Omit<Item, 'id'>,
   ): Promise<Item> {
-    // Check if the todo exists (repository will throw if deleted)
     try {
       await this.todoRepository.findById(todoId);
     } catch (e) {
@@ -100,7 +99,6 @@ export class ItemController {
       throw ApiError.notFound('Todo not found or deleted');
     }
 
-    // Filter by todoId
     const todoFilter = {todoId};
     const finalFilter = filter ?? {};
 
@@ -157,18 +155,14 @@ export class ItemController {
       throw ApiError.notFound('Associated Todo is deleted');
     }
 
-    // If isCompleted is being set to true and it was previously false,
     // set the completedAt timestamp
     if (item.isCompleted === true && !originalItem.isCompleted) {
       item.completedAt = new Date();
     }
-
-    // If isCompleted is being set to false, clear the completedAt timestamp
     if (item.isCompleted === false) {
       item.completedAt = undefined;
     }
 
-    // Set updated timestamp
     item.updatedAt = new Date();
 
     await this.itemRepository.updateById(id, item);
@@ -189,14 +183,12 @@ export class ItemController {
       throw ApiError.notFound('Associated Todo is deleted');
     }
 
-    // Handle completedAt based on isCompleted status
     if (item.isCompleted && !item.completedAt) {
       item.completedAt = new Date();
     } else if (!item.isCompleted) {
       item.completedAt = undefined;
     }
 
-    // Set updated timestamp and preserve created timestamp
     item.updatedAt = new Date();
     item.createdAt = originalItem.createdAt;
 

@@ -1,5 +1,5 @@
 import {belongsTo, Entity, model, property} from '@loopback/repository';
-import {Todo} from './todo.model';
+import {Todo, TodoWithRelations} from './todo.model';
 
 @model({
   settings: {
@@ -57,7 +57,7 @@ export class Item extends Entity {
 }
 
 export interface ItemRelations {
-  // describe navigational properties here
+  todo?: TodoWithRelations;
 }
 
 export type ItemWithRelations = Item & ItemRelations;

@@ -1,5 +1,5 @@
 import {Entity, hasMany, model, property} from '@loopback/repository';
-import {Item} from './item.model';
+import {Item, ItemWithRelations} from './item.model';
 
 export enum TodoStatus {
   ACTIVE = 'active',
@@ -54,7 +54,7 @@ export class Todo extends Entity {
 }
 
 export interface TodoRelations {
-  // describe navigational properties here
+  items?: ItemWithRelations[];
 }
 
 export type TodoWithRelations = Todo & TodoRelations;
