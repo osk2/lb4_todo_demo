@@ -27,10 +27,9 @@ export class Item extends Entity {
 
   @property({
     type: 'boolean',
-    required: true,
     default: false,
   })
-  isCompleted: boolean;
+  isCompleted?: boolean;
 
   @property({
     type: 'date',

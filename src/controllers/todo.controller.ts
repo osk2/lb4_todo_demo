@@ -59,7 +59,7 @@ export class TodoController {
                 type: 'array',
                 items: {
                   type: 'object',
-                  required: ['content', 'isCompleted'],
+                  required: ['content'],
                   properties: {
                     content: {type: 'string'},
                     isCompleted: {type: 'boolean'},
@@ -145,7 +145,6 @@ export class TodoController {
     @param.path.number('id') id: number,
     @param.filter(Todo, {exclude: 'where'}) filter?: FilterExcludingWhere<Todo>,
   ): Promise<Todo> {
-    // The repository layer now handles the check for deleted todos
     return this.todoRepository.findById(id, filter);
   }
 
